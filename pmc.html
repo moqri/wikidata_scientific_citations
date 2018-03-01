@@ -28,7 +28,7 @@
 		  	method: 'GET',
 		  	success: function(data) {
 				items=data['linksets'][0]['linksetdbs'][0]['links']
-				items.forEach(function(ref,i){
+				items.forEach(function(ref){
 					var endpointUrl = 'https://query.wikidata.org/sparql',
 			    	sparqlQuery = "SELECT ?item WHERE {" +
 			        	"  ?item wdt:P698 \"" + ref + "\"." +
@@ -37,11 +37,13 @@
 			        	"LIMIT 1",
 			    	settings = {
 			        headers: { Accept: 'application/sparql-results+json' },
-			        data: { query: sparqlQuery }
+			        data: { query: sparqlQuery },
+			        //dataType:'jsonp',
+
 			    	};			    	
 					$.ajax( endpointUrl, settings ).then( function ( data ) {
 						console.log(ref);
-				        $( '#ref_div' ).append( i+1 +'- PubMD ID: '+ ref + ' - ');
+				        $( '#ref_div' ).append( 'PubMD ID: '+ ref + ' - ');
 				    	refQ=data['results']['bindings'][0]
 				    	if(typeof refQ !== "undefined"){
 				    		wikidata_url=refQ['item']['value']
