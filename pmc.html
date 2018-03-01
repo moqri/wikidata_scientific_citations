@@ -40,15 +40,19 @@
 			        //dataType:'jsonp',
 
 			    	};			    	
-					$.ajax( endpointUrl, settings ).then( function ( data ) {
-				        $( '#ref_div' ).append( 'PubMD ID: '+ ref + ' - ');
+					$.ajax( endpointUrl, settings ).success( function ( data ) {
+				        $( '#ref_div' ).append( 'PubMed ID: '+ '<a href="https://www.ncbi.nlm.nih.gov/pubmed/'+ref+'">' + ref  + '</a>');
 				    	refQ=data['results']['bindings'][0]
 				    	if(typeof refQ !== "undefined"){
 				    		wikidata_url=refQ['item']['value']
 				    		wikidata=wikidata_url.replace('http://www.wikidata.org/entity/','')
-				    		$( '#ref_div' ).append( '<a href="'+wikidata_url+'">'+wikidata+'</a>' );
-				    	}else{}
+				    		$( '#ref_div' ).append( ' - <a href="'+wikidata_url+'">'+wikidata+'</a>' );
+				    	}else{
+				    		$( '#ref_div' ).append( ' - Not in WikiData' );				   	
+				    	}
 				    	$( '#ref_div' ).append($('<p>'));
+					}).error( function(xhr, status, error) {
+				        $( '#ref_div' ).append( 'PubMed ID: '+ ref +' - ERROR <p>');
 					})
 				})
 
