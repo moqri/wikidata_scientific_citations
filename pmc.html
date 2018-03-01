@@ -17,7 +17,6 @@
 
 	function list_ref() {
    		pmc=document.getElementById('pmcid').value
-   		console.log('pmc='+pmc)
 		$( '#ref_div' ).empty()
 		$( '#ref_div' ).append('<h2> PMCID: '+pmc);
 		$( '#ref_div' ).append('<h3> Cites:');
@@ -42,13 +41,11 @@
 
 			    	};			    	
 					$.ajax( endpointUrl, settings ).then( function ( data ) {
-						console.log(ref);
 				        $( '#ref_div' ).append( 'PubMD ID: '+ ref + ' - ');
 				    	refQ=data['results']['bindings'][0]
 				    	if(typeof refQ !== "undefined"){
 				    		wikidata_url=refQ['item']['value']
 				    		wikidata=wikidata_url.replace('http://www.wikidata.org/entity/','')
-				    		console.log(refQ['item']['value'])
 				    		$( '#ref_div' ).append( '<a href="'+wikidata_url+'">'+wikidata+'</a>' );
 				    	}else{}
 				    	$( '#ref_div' ).append($('<p>'));
