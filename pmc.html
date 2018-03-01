@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Scholarly Journals Database</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+   </head>
+    PMCID: 
+    <input type="text"  id='pmcid' value='2696350' />
+    <input type="button" value="submit" onclick="list_ref()" />
+    <div id='ref_div'></div>
+   <script>
+
+	function list_ref() {
+   		pmc=document.getElementById('pmcid').value
+   		console.log('pmc='+pmc)
+		$( '#ref_div' ).empty()
+		$( '#ref_div' ).append('<h2> PMCID: '+pmc);
+		$( '#ref_div' ).append('<h3> Cites:');
+		
+		url='https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pmc&linkname=pmc_refs_pubmed&retmode=json&id='+pmc
+		$.ajax({
+		  	url: url,
+		  	method: 'GET',
+		  	success: function(data) {
+				items=data['linksets'][0]['linksetdbs'][0]['links']
+				items.forEach(function(ref,i){
+					var endpointUrl = 'https://query.wikidata.org/sparql',
+			    	sparqlQuery = "SELECT ?item WHERE {" +
+			        	"  ?item wdt:P698 \"" + ref + "\"." +
+			        	"  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }" +
+			        	"}" +
+			        	"LIMIT 1",
+			    	settings = {
+			        headers: { Accept: 'application/sparql-results+json' },
+			        data: { query: sparqlQuery }
+			    	};			    	
+					$.ajax( endpointUrl, settings ).then( function ( data ) {
+						console.log(ref);
+				        $( '#ref_div' ).append( i+1 +'- PubMD ID: '+ ref + ' - ');
+				    	refQ=data['results']['bindings'][0]
+				    	if(typeof refQ !== "undefined"){
+				    		wikidata_url=refQ['item']['value']
+				    		wikidata=wikidata_url.replace('http://www.wikidata.org/entity/','')
+				    		console.log(refQ['item']['value'])
+				    		$( '#ref_div' ).append( '<a href="'+wikidata_url+'">'+wikidata+'</a>' );
+				    	}else{}
+				    	$( '#ref_div' ).append($('<p>'));
+					})
+				})
+
+			},
+		});
+ };
+   </script>
+</html>
