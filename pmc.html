@@ -11,10 +11,34 @@
    </head>
     PMCID: 
     <input type="text"  id='pmcid' value='2696350' />
-    <input type="button" value="submit" onclick="list_ref()" />
+    <input type="button" value="submit" onclick="find_in_wikidata();list_ref()" />
     <div id='ref_div'></div>
    <script>
 
+	function find_in_wikidata(){
+		pmc=document.getElementById('pmcid').value
+					var endpointUrl = 'https://query.wikidata.org/sparql',
+			    	sparqlQuery = 
+			    		"SELECT ?item WHERE {" +
+			        	"  ?item wdt:P932 \"" + pmc + "\"." +
+			        	"  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }" +
+			        	"}" +
+			        	"LIMIT 1"
+			    	settings = {
+			        headers: { Accept: 'application/sparql-results+json' },
+			        data: { query: sparqlQuery },
+			    	};			    	
+					$.ajax( endpointUrl, settings ).success( function ( data ) {
+				        $( '#ref_div' ).append( 'PubMed ID: '+ '<a href="https://www.ncbi.nlm.nih.gov/pubmed/'+pmc+'">' + pmc  + '</a>');
+				    	refQ=data['results']['bindings'][0]
+				    	if(typeof refQ !== "undefined"){
+				    		wikidata_url=refQ['item']['value']
+				    		console.log(wikidata_url)
+				    	}
+				    })
+
+
+	}
 	function list_ref() {
    		pmc=document.getElementById('pmcid').value
 		$( '#ref_div' ).empty()
@@ -27,18 +51,17 @@
 		  	method: 'GET',
 		  	success: function(data) {
 				items=data['linksets'][0]['linksetdbs'][0]['links']
-				items.forEach(function(ref){
+				items.slice(0,5).forEach(function(ref){
 					var endpointUrl = 'https://query.wikidata.org/sparql',
-			    	sparqlQuery = "SELECT ?item WHERE {" +
+			    	sparqlQuery = 
+			    		"SELECT ?item WHERE {" +
 			        	"  ?item wdt:P698 \"" + ref + "\"." +
 			        	"  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }" +
 			        	"}" +
-			        	"LIMIT 1",
+			        	"LIMIT 1"
 			    	settings = {
 			        headers: { Accept: 'application/sparql-results+json' },
 			        data: { query: sparqlQuery },
-			        //dataType:'jsonp',
-
 			    	};			    	
 					$.ajax( endpointUrl, settings ).success( function ( data ) {
 				        $( '#ref_div' ).append( 'PubMed ID: '+ '<a href="https://www.ncbi.nlm.nih.gov/pubmed/'+ref+'">' + ref  + '</a>');
@@ -47,6 +70,24 @@
 				    		wikidata_url=refQ['item']['value']
 				    		wikidata=wikidata_url.replace('http://www.wikidata.org/entity/','')
 				    		$( '#ref_div' ).append( ' - <a href="'+wikidata_url+'">'+wikidata+'</a>' );
+
+		    				sparqlQuery = 
+						        "SELECT ?item WHERE {" +
+						        "  wd:"+wikidata+ " wdt:P2860 ?item ." +
+						        "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }" +
+						        "}" 
+						    settings = {
+						        headers: { Accept: 'application/sparql-results+json' },
+						        data: { query: sparqlQuery }
+						    };
+							$.ajax( endpointUrl, settings ).then( function ( data ) {
+								data['results']['bindings'].forEach(function(ref){
+									console.log(ref['item']['value'].replace('http://www.wikidata.org/entity/',''))
+								})
+							});
+
+
+
 				    	}else{
 				    		$( '#ref_div' ).append( ' - Not in WikiData' );				   	
 				    	}
