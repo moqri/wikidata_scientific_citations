@@ -99,14 +99,14 @@
 
 				    		//check if a wikidata statement for this citation exists 
 				    		if ($.inArray(wikidata, wiki_cites)!= -1){
-				    			$( '#ref_div' ).append( ' - WikiData citation statement exists' );
+				    			$( '#ref_div' ).append( ' - Wikidata citation statement exists' );
 				    		}else{
-				    			$( '#ref_div' ).append( ' - WikiData citation statement dose not exists' );
+				    			$( '#ref_div' ).append( ' - Wikidata citation statement dose not exists' );
 				    		}
 
 
 				    	}else{
-				    		$( '#ref_div' ).append( ' - Not in WikiData' );				   	
+				    		$( '#ref_div' ).append( ' - Not in Wikidata' );				   	
 				    	}
 				    	$( '#ref_div' ).append($('<p>'));
 					}).error( function(xhr, status, error) {
