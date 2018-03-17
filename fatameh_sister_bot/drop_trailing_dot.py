@@ -10,7 +10,7 @@ for item_Q in items_Q:
     item = pywikibot.ItemPage(repo, item_Q)
     item.get()
     print item.labels['en']
-    if item.labels['en'][-1]=='.':
+    if item.labels['en'][-1]=='.' or item.labels['en'][-1]=='*': 
         new_labels=item.labels
         new_labels['en']=new_labels['en'][:-1]
         item.editLabels(labels=new_labels, summary="Fixing the label imported by Fatameh.")
