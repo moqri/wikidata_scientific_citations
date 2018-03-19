@@ -20,7 +20,7 @@ for item_Q in items_Q[0:20]:
     title_json= title_claim[0].toJSON()
     title= title_json['mainsnak']['datavalue']['value']['text']
     if title[-1]=='.' or title[-1]=='*':
-        fixed_title=title[:-1]
+        fixed_title=title[:-1].strip()
         title_json['mainsnak']['datavalue']['value']['text']=fixed_title
         corrected_claim=pywikibot.Claim.fromJSON(site,title_json)     
         item.claims['P1476']=[corrected_claim]
