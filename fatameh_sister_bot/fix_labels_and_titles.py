@@ -7,7 +7,7 @@ repo = site.data_repository()
 with open('pages.txt') as f:
     items_Q = f.read().splitlines()
 #for item_Q in items_Q[50460:1000000]:
-for item_Q in items_Q[61800:1000000]:
+for item_Q in items_Q[111850:1000000]:
   print item_Q,
   try:  
     item = pywikibot.ItemPage(repo, item_Q)
