@@ -16,7 +16,9 @@ for line in lines[1000:]:
   for i in range(1):#try:  
     item = pywikibot.ItemPage(repo, item_Q)
     item.get()
-    if 'P236' not in item.claims:    
+    issns= [claim.toJSON()['mainsnak']['datavalue']['value'] for claim in item.claims['P236']]
+    print issns
+    if issn not in issns:    
 	stringclaim = pywikibot.Claim(repo, u'P236')
         stringclaim.setTarget(issn)
 

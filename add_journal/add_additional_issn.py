@@ -4,20 +4,22 @@ import pywikibot
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()
 
-with open('issn.tab') as f:
+with open('additional_issn.tab') as f:
     lines = f.read().splitlines()
 
-for line in lines[1000:]:
-  issn=line.split('\t')[0]
-  ref=line.split('\t')[1]
-  item_Q=line.split('\t')[2]
+for line in lines[0:2]:
+  issn=line.split('\t')[1]
+  ref=line.split('\t')[2]
+  item_Q=line.split('\t')[0]
   print item_Q,
   print ref
   for i in range(1):#try:  
     item = pywikibot.ItemPage(repo, item_Q)
     item.get()
-    if 'P236' not in item.claims:    
-	stringclaim = pywikibot.Claim(repo, u'P236')
+    issns= [claim.toJSON()['mainsnak']['datavalue']['value'] for claim in item.claims['P236']]
+    print issns
+    if issn not in issns:    
+        stringclaim = pywikibot.Claim(repo, u'P236')
         stringclaim.setTarget(issn)
 
         ref_url = pywikibot.Claim(repo, u'P854')
