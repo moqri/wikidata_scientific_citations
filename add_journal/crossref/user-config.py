@@ -40,7 +40,8 @@ mylang = 'wikidata'
 # The dictionary usernames should contain a username for each site where you
 # have a bot account. If you have a unique username for all languages of a
 # family , you can use '*'
-usernames['wikidata']['wikidata'] = u'mahdimoqri'
+usernames['wikidata']['wikidata'] = u'crossref_bot'
+usernames['wikidata']['test'] = u'crossref_bot'
 
 
 # ############# LOGFILE SETTINGS ##############
@@ -175,7 +176,7 @@ maxthrottle = 60
 
 # Slow down the robot such that it never makes a second page edit within
 # 'put_throttle' seconds.
-put_throttle = 1
+put_throttle = 9
 
 # Sometimes you want to know when a delay is inserted. If a delay is larger
 # than 'noisysleep' seconds, it is logged on the screen.
